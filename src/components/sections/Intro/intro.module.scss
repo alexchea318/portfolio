@@ -74,7 +74,10 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  // Reserves the tallest state of the thread so the card never resizes
+  // mid-conversation. On phones that state is much shorter than on desktop.
   min-height: 380px;
+  @include bp.mobile { min-height: 300px; }
 }
 .demo__head {
   @include m.mono(0.16em);

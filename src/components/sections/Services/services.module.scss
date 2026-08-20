@@ -1,6 +1,14 @@
 @use 'mixins' as m;
 @use 'breakpoints' as bp;
 
+// Fixed chip height: the phone layout packs an exact number of rows into a
+// fixed-height column, so the height cannot depend on the font's line box.
+$chip-h: 40px;
+$chip-gap: 10px;
+// Width of the longest chip: used as a floor on phones so every chip in the
+// strip comes out the same size instead of hugging its own label.
+$chip-w: 260px;
+
 .services {
   @include m.gutter;
   padding-block: 72px 96px;
@@ -18,20 +26,45 @@
 .services__cloud {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: $chip-gap;
   margin: 0;
   padding: 0;
   list-style: none;
+
+  // On phones the cloud would stack into ten rows. Column-wrap instead: items
+  // fill three rows top-to-bottom and the rest runs off to the right, scrolled.
+  @include bp.mobile {
+    flex-flow: column wrap;
+    align-content: flex-start;
+    // stretch, not flex-start: chips in a column share its width, so the three
+    // rows read as aligned tiles instead of a ragged edge.
+    align-items: stretch;
+    height: $chip-h * 3 + $chip-gap * 2;
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar { display: none; }
+  }
 }
 
 // One chip at a time inverts; the highlight walks the list on a timer.
 .chip {
   @include m.mono(0.14em);
-  padding: 11px 15px;
+  height: $chip-h;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 15px;
   border: 1px solid var(--line);
   border-radius: 2px;
   color: var(--muted);
+  white-space: nowrap;
   transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
+
+  @include bp.mobile { min-width: $chip-w; }
 }
 .chip--active {
   background: var(--ink);
