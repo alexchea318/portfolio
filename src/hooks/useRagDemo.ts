@@ -3,90 +3,89 @@ import { useEffect, useState } from "react";
 import { useLang } from "@/components/primitives/T";
 import { ragDemo } from "@/content/site";
 
-export type RagChip = { text: string; shown: boolean };
-export type RagMessage =
-  | { kind: "user"; text: string }
-  | { kind: "retrieving"; label: string }
-  | { kind: "sources"; chips: RagChip[] }
-  | { kind: "bot"; text: string };
+export type RagState = {
+  /** Words revealed so far — one <span> each, so CSS fades them in. */
+  question: string[];
+  searching: boolean;
+  sources: string[] | null;
+  answer: string[];
+  /** True while the finished thread fades out before the next question. */
+  closing: boolean;
+};
 
-export type RagState = { messages: RagMessage[] };
+const EMPTY: RagState = { question: [], searching: false, sources: null, answer: [], closing: false };
+const FADE = 500;
 
-const wait = (ms: number, signal: AbortSignal) =>
-  new Promise<void>((resolve, reject) => {
-    const id = setTimeout(() => (signal.aborted ? reject(new Error("aborted")) : resolve()), ms);
-    signal.addEventListener("abort", () => { clearTimeout(id); reject(new Error("aborted")); }, { once: true });
-  });
+const words = (s: string) => s.split(" ");
 
+/** Self-playing "chat over your files" demo: types a question word by word,
+ *  shows the retrieval step, reveals the sources, answers, then moves on.
+ *  Word-level steps keep the bubble from resizing on every frame. */
 export function useRagDemo(): RagState {
   const { lang } = useLang();
-  const [messages, setMessages] = useState<RagMessage[]>([]);
+  const [state, setState] = useState<RagState>(EMPTY);
 
   useEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) {
-      const d = ragDemo.items[0];
-      setMessages([
-        { kind: "user", text: d.q[lang] },
-        { kind: "sources", chips: d.src.map((s) => ({ text: s, shown: true })) },
-        { kind: "bot", text: d.a[lang] },
-      ]);
+    const srcOf = (item: (typeof ragDemo.items)[number]) => item.src.map((s) => s[lang]);
+
+    const first = ragDemo.items[0];
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setState({
+        question: words(first.q[lang]),
+        searching: false,
+        sources: srcOf(first),
+        answer: words(first.a[lang]),
+        closing: false,
+      });
       return;
     }
 
     const ac = new AbortController();
     const { signal } = ac;
-    const set = (m: RagMessage[]) => { if (!signal.aborted) setMessages(m); };
+    const wait = (ms: number) =>
+      new Promise<void>((resolve, reject) => {
+        const id = setTimeout(resolve, ms);
+        signal.addEventListener("abort", () => { clearTimeout(id); reject(signal.reason); }, { once: true });
+      });
 
-    (async function run() {
+    (async () => {
       try {
-        let i = 0;
-        while (!signal.aborted) {
-          const d = ragDemo.items[i % ragDemo.items.length];
-          const q = d.q[lang];
-          const a = d.a[lang];
+        for (let i = 0; ; i++) {
+          const item = ragDemo.items[i % ragDemo.items.length];
+          const q = words(item.q[lang]);
+          const a = words(item.a[lang]);
+          const src = srcOf(item);
 
-          // type question
-          for (let c = 0; c <= q.length; c++) {
-            set([{ kind: "user", text: q.slice(0, c) }]);
-            await wait(28, signal);
+          setState(EMPTY);
+          await wait(700);
+          for (let n = 1; n <= q.length; n++) {
+            setState({ ...EMPTY, question: q.slice(0, n) });
+            await wait(130);
           }
-          await wait(420, signal);
-          set([{ kind: "user", text: q }, { kind: "retrieving", label: ragDemo.retrieving[lang] }]);
-          await wait(560, signal);
-
-          // reveal chips one by one
-          const chips: RagChip[] = d.src.map((s) => ({ text: s, shown: false }));
-          for (let k = 0; k < chips.length; k++) {
-            await wait(130, signal);
-            chips[k] = { ...chips[k], shown: true };
-            set([
-              { kind: "user", text: q },
-              { kind: "retrieving", label: ragDemo.retrieving[lang] },
-              { kind: "sources", chips: [...chips] },
-            ]);
+          await wait(450);
+          setState({ question: q, searching: true, sources: null, answer: [], closing: false });
+          await wait(950);
+          // Sources replace the status row instead of stacking under it — one
+          // swap in place reads calmer than a row appearing then vanishing.
+          setState({ question: q, searching: false, sources: src, answer: [], closing: false });
+          await wait(700);
+          for (let n = 1; n <= a.length; n++) {
+            setState({ question: q, searching: false, sources: src, answer: a.slice(0, n), closing: false });
+            await wait(85);
           }
-          await wait(420, signal);
-
-          // type answer (retrieving row removed)
-          for (let c = 0; c <= a.length; c++) {
-            set([
-              { kind: "user", text: q },
-              { kind: "sources", chips: [...chips] },
-              { kind: "bot", text: a.slice(0, c) },
-            ]);
-            await wait(15, signal);
-          }
-          await wait(2800, signal);
-          i++;
+          await wait(3800);
+          // Fade the finished thread out instead of blanking it: the loop reads
+          // as one continuous conversation rather than a hard cut.
+          setState({ question: q, searching: false, sources: src, answer: a, closing: true });
+          await wait(FADE);
         }
       } catch {
-        /* aborted */
+        /* aborted on unmount or language change */
       }
     })();
 
-    return () => ac.abort();
+    return () => ac.abort(new Error("stopped"));
   }, [lang]);
 
-  return { messages };
+  return state;
 }

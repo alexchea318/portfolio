@@ -1,108 +1,69 @@
 @use 'mixins' as m;
-@use 'breakpoints' as bp;
-@use 'tokens' as t;
 
-// Co-scoped keyframes (CSS Modules scopes animation names).
-@keyframes axc-pan { 0% { background-position: 0% 50%; } 100% { background-position: 300% 50%; } }
-@keyframes axc-pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.82); } }
+.contact { padding: 0 0 24px; }
 
-.contact {
-  position: relative;
-  z-index: 2;
-  overflow: hidden;
-  background: #17150f;
-  color: #f3ebdd;
-  padding: clamp(78px, 13vh, 160px) 6vw clamp(26px, 4vh, 40px);
-}
-.contact__inner { position: relative; z-index: 1; }
-
-.contact__top {
-  @include m.mono;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 16px 24px;
-  font-size: 12px;
-  letter-spacing: 0.14em;
-  color: rgba(243, 235, 221, 0.5);
-}
-.contact__status {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  color: rgba(243, 235, 221, 0.6);
-}
-.contact__dot {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: t.$green;
-  animation: axc-pulse 1.6s ease-in-out infinite;
-  @include bp.reduced-motion { animation: none; }
+.contact__note {
+  @include m.gutter;
+  margin: 0 0 28px;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--dim);
+  max-width: 52ch;
+  text-wrap: pretty;
 }
 
+// The single loudest element on the page: a full-bleed link that inverts on hover.
 .contact__headline {
   @include m.display;
-  display: inline-block;
-  margin-top: clamp(28px, 4vh, 52px);
-  font-weight: 800;
-  line-height: 0.86;
-  letter-spacing: -0.04em;
-  font-size: clamp(52px, 12vw, 200px);
-  background: linear-gradient(110deg, #f3ebdd 42%, #ff7543 70%, #8e4ec6);
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  animation: axc-pan 9s linear infinite;
-  transition: transform 0.35s var(--ease);
-  @include bp.reduced-motion { animation: none; }
+  display: block;
+  padding: 24px var(--gutter) 72px;
+  font-size: clamp(40px, 8.4vw, 138px);
+  line-height: 0.96;
+  letter-spacing: -0.045em;
+  transition: background-color 0.4s var(--ease), color 0.4s var(--ease);
+
+  &:hover { background: var(--ink); color: var(--bg); }
 }
 
 .contact__links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px 40px;
-  margin-top: clamp(44px, 7vh, 86px);
+  @include m.gutter;
+  display: grid;
+  // auto-fit, not a fixed count: the row stays even whether it holds four
+  // links (RU) or three (VK is dropped in EN), and folds to one on phones.
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
 }
 .contact__link {
-  @include m.mono;
+  border: 1px solid var(--line-2);
+  padding: 20px 24px;
   display: flex;
-  align-items: center;
-  gap: 9px;
-  font-size: 14px;
-  letter-spacing: 0.03em;
-  color: #f3ebdd;
-  transition: color 0.3s var(--ease);
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  transition: background-color 0.3s var(--ease), border-color 0.3s var(--ease);
+
+  &:hover { background: var(--panel); border-color: var(--ink); }
 }
-.contact__arrow { color: #ff7543; }
+.contact__kind {
+  @include m.mono(0.12em);
+  color: var(--faint);
+}
+.contact__value {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
+}
 
 .contact__bottom {
-  @include m.mono;
+  @include m.mono(0.12em);
+  @include m.gutter;
   display: flex;
-  flex-wrap: wrap;
   justify-content: space-between;
-  align-items: center;
-  gap: 12px 32px;
-  margin-top: clamp(54px, 9vh, 110px);
-  padding-top: 26px;
-  border-top: 1px solid rgba(243, 235, 221, 0.14);
-  font-size: 11.5px;
-  letter-spacing: 0.05em;
-  color: rgba(243, 235, 221, 0.5);
+  align-items: flex-end;
+  gap: 32px;
+  padding-top: 40px;
+  color: var(--faint);
 }
-.contact__totop {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: rgba(243, 235, 221, 0.5);
-  transition: color 0.3s var(--ease);
-}
-
-@media (hover: hover) {
-  .contact__link:hover { color: #ff7543; }
-  .contact__totop:hover { color: #f3ebdd; }
-}
+.contact__name { color: var(--ink); }

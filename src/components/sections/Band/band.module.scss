@@ -1,0 +1,27 @@
+@use 'mixins' as m;
+
+.band {
+  overflow: hidden;
+  padding: 16px 0;
+  border-bottom: 1px solid oklch(0.28 0.006 260);
+}
+
+.band__line {
+  @include m.display;
+  font-size: clamp(34px, 5.6vw, 82px);
+  line-height: 1.05;
+  white-space: nowrap;
+}
+.band__word--outline { @include m.display-outline; }
+
+// Heading stays in the accessibility tree, out of the visual flow.
+.band__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

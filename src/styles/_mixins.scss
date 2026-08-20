@@ -1,43 +1,60 @@
-@use 'tokens' as t;
+// Typography and surface primitives shared by every section module.
 
-@mixin mono {
+@mixin mono($ls: 0.12em) {
   font-family: var(--font-mono);
-  letter-spacing: 0.05em;
+  font-size: 11px;
+  letter-spacing: $ls;
+  text-transform: uppercase;
 }
-@mixin display {
+
+// Oversized Archivo headline — the one voice the whole page shouts in.
+@mixin display($weight: 800) {
   font-family: var(--font-display);
-  letter-spacing: -0.03em;
-  line-height: 0.9;
+  font-weight: $weight;
+  line-height: 1.03;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
 }
+
+// Hollow twin of @display: used for every second marquee row.
+@mixin display-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--stroke);
+}
+
 @mixin gutter { padding-inline: var(--gutter); }
 
-@mixin grad-text {
-  // Hex from tokens, not var(--color-*): Tailwind v4 @theme tree-shakes unused
-  // theme vars, so var(--color-red) is empty at runtime.
-  background: linear-gradient(110deg, t.$red, t.$orange, t.$violet);
-  background-size: 300% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  // Consumer module must define @keyframes axc-pan locally — CSS Modules scopes
-  // the animation name, so the keyframes must be co-scoped in the same file.
-  animation: axc-pan 9s linear infinite;
-  @media (prefers-reduced-motion: reduce) { animation: none; }
-}
-@mixin grad-text-static {
-  background: linear-gradient(110deg, t.$red, t.$orange);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+// Small bordered mono label (tags, source chips, service chips).
+@mixin chip {
+  @include mono(0.08em);
+  font-size: 10px;
+  padding: 5px 10px;
+  border: 1px solid var(--line-2);
+  color: var(--muted);
+  white-space: nowrap;
 }
 
-// Frosted backdrop behind nav logo / links / menu.
-@mixin nav-pill {
-  background: rgba(243, 235, 221, 0.72);
-  backdrop-filter: blur(12px) saturate(1.1);
-  -webkit-backdrop-filter: blur(12px) saturate(1.1);
-  border: 1px solid rgba(23, 21, 15, 0.08);
-  box-shadow: 0 6px 24px rgba(23, 21, 15, 0.07);
+// Mono call-to-action button. `$solid` inverts it into the primary variant.
+@mixin btn($solid: false) {
+  @include mono(0.1em);
+  font-size: 12px;
+  display: inline-block;
+  padding: 14px 20px;
+  border-radius: 2px;
+  transition: background-color 0.3s var(--ease), color 0.3s var(--ease), border-color 0.3s var(--ease);
+
+  @if $solid {
+    background: var(--ink);
+    color: var(--bg);
+    &:hover { background: var(--accent); }
+  } @else {
+    border: 1px solid oklch(0.44 0.008 260);
+    &:hover { border-color: var(--ink); }
+  }
+}
+
+// Bordered panel used by the demo card, advantage cards and contact tiles.
+@mixin panel {
+  border: 1px solid var(--line);
+  background: var(--panel);
 }

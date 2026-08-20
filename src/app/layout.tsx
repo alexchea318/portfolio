@@ -2,25 +2,28 @@ import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import "./globals.css";
 import { siteUrl, links } from "@/lib/config";
+import { meHero } from "@/content/site";
 
 const NAME = "Александр Чеченев";
-const ROLE = "Full-Stack / AI Engineer (RAG)";
+// Pitch goes in the title; JOB_TITLE stays a real job title for JSON-LD.
+const PITCH = "сделаю сайт или сервис за неделю";
+const JOB_TITLE = "Разработчик сайтов и сервисов";
 const DESC =
-  "Довожу RAG-системы до продакшена: бэкенд, фронт, инфраструктура и качество генерации. Санкт-Петербург, удалённо.";
+  "Делаю сайты, интернет-магазины, личные кабинеты и чат-боты. Один человек на весь проект: от идеи до работающего сайта — за неделю. Санкт-Петербург, удалённо.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl()),
-  title: `${NAME} — ${ROLE}`,
+  title: `${NAME} — ${PITCH}`,
   description: DESC,
   alternates: {
     canonical: "/",
     languages: { ru: "/", en: "/en/" },
   },
   openGraph: {
-    title: `${NAME} — ${ROLE}`,
+    title: `${NAME} — ${PITCH}`,
     description: DESC,
     type: "profile",
-    images: ["/img/me.jpg"],
+    images: [meHero.src],
   },
   twitter: { card: "summary_large_image" },
 };
@@ -29,11 +32,11 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: NAME,
-  jobTitle: ROLE,
+  jobTitle: JOB_TITLE,
   url: `${siteUrl()}/`,
   email: links.email,
   address: { "@type": "PostalAddress", addressLocality: "Saint Petersburg", addressCountry: "RU" },
-  sameAs: [links.github, links.linkedin, links.telegram, links.vk],
+  sameAs: [links.linkedin, links.telegram, links.vk],
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -42,7 +45,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="icon" href="/favicon.png" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

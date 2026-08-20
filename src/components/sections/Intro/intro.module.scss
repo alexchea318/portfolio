@@ -1,0 +1,182 @@
+@use 'mixins' as m;
+@use 'breakpoints' as bp;
+
+@keyframes axc-pulse { 0%, 100% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1); } }
+@keyframes axc-word { from { opacity: 0; filter: blur(3px); } to { opacity: 1; filter: blur(0); } }
+
+.intro {
+  @include m.gutter;
+  padding-block: 56px 112px;
+  @include bp.mobile { padding-block: 36px 64px; }
+}
+
+.intro__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: 56px;
+  align-items: start;
+  padding-top: 8px;
+  @include bp.mobile { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+}
+
+.intro__statement {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(23px, 2.7vw, 42px);
+  line-height: 1.14;
+  letter-spacing: -0.032em;
+  text-wrap: pretty;
+}
+.intro__accent { color: var(--accent); }
+
+/* ---------- three numbers ---------- */
+.intro__stats {
+  margin-top: 52px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 24px;
+  @include bp.mobile { margin-top: 36px; gap: 22px; }
+}
+// No padding: the column has to line up flush with the statement above it.
+.stat {
+  display: flex;
+  flex-direction: column;
+}
+.stat__value {
+  @include m.display;
+  font-size: clamp(18px, 1.9vw, 27px);
+  letter-spacing: -0.02em;
+  overflow-wrap: break-word;
+}
+.stat__label {
+  @include m.mono(0.02em);
+  text-transform: none;
+  line-height: 1.5;
+  color: var(--faint);
+  margin-top: 10px;
+}
+
+/* ---------- calls to action ---------- */
+.intro__ctas {
+  margin-top: 44px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.intro__cta { @include m.btn; }
+.intro__cta--solid { @include m.btn($solid: true); }
+
+/* ---------- self-playing retrieval demo ---------- */
+.demo {
+  @include m.panel;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 380px;
+}
+.demo__head {
+  @include m.mono(0.16em);
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--faint);
+  padding-bottom: 14px;
+}
+.demo__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: axc-pulse 2.2s ease-in-out infinite;
+}
+.demo__thread {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
+  transition: opacity 0.5s var(--ease);
+}
+// Fades the finished thread out so the loop has no hard cut at the end.
+.demo__thread--closing { opacity: 0; }
+.demo__q {
+  align-self: flex-end;
+  max-width: 88%;
+  margin: 0;
+  background: var(--ink);
+  color: var(--bg);
+  padding: 12px 15px;
+  border-radius: 12px 12px 2px 12px;
+  font-size: 14px;
+  line-height: 1.45;
+  min-height: 20px;
+}
+.demo__status {
+  @include m.mono(0.02em);
+  text-transform: none;
+  margin: 0;
+  color: var(--faint);
+}
+// One span per word: the reveal is a CSS fade, not a re-layout per keystroke.
+.demo__word {
+  display: inline;
+  animation: axc-word 0.32s var(--ease) both;
+}
+
+.demo__sources { display: flex; gap: 6px; flex-wrap: wrap; }
+.demo__src {
+  @include m.chip;
+  animation: axc-word 0.32s var(--ease) both;
+}
+.demo__a {
+  align-self: flex-start;
+  max-width: 92%;
+  margin: 0;
+  border: 1px solid var(--line-2);
+  padding: 12px 15px;
+  border-radius: 12px 12px 12px 2px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ---------- why a week is realistic ---------- */
+.rail {
+  margin-top: 96px;
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 12px;
+  @include bp.mobile { margin-top: 56px; }
+}
+.rail__card {
+  flex: 1 0 min(400px, 78vw);
+  scroll-snap-align: start;
+  border: 1px solid var(--line);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 260px;
+}
+.rail__title {
+  @include m.display;
+  margin: 0;
+  font-size: clamp(20px, 2.2vw, 30px);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+.rail__text {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--dim);
+  text-wrap: pretty;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .demo__word,
+  .demo__src { animation: none; }
+}

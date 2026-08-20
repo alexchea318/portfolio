@@ -5,10 +5,10 @@ import { cx } from "@/lib/cx";
 import type { Locale } from "@/lib/i18n";
 import styles from "../nav.module.scss";
 
-export function LangToggle({ vertical = false }: { vertical?: boolean }) {
+export function LangToggle() {
   const { lang, setLang } = useLang();
   return (
-    <div data-cursor className={cx(styles.lang, vertical && styles["lang--vertical"])}>
+    <div className={styles.lang}>
       {(["ru", "en"] as Locale[]).map((code) => (
         <button
           key={code}

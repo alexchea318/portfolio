@@ -1,0 +1,36 @@
+// Keyframes are co-scoped: CSS Modules scopes the animation name too.
+@keyframes axc-marquee-left {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+@keyframes axc-marquee-right {
+  from { transform: translate3d(-50%, 0, 0); }
+  to { transform: translate3d(0, 0, 0); }
+}
+
+.marquee { overflow: hidden; }
+
+.marquee__track {
+  display: flex;
+  width: max-content;
+  animation: axc-marquee-left var(--dur) linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+.marquee__track--right { animation-name: axc-marquee-right; }
+
+.marquee__group {
+  display: flex;
+  align-items: center;
+
+  > * {
+    flex: 0 0 auto;
+    margin-right: var(--gap);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track { animation: none; }
+  // Without motion the duplicate is dead weight and can overflow the row.
+  .marquee__group:nth-child(2) { display: none; }
+}

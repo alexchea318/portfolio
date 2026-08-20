@@ -1,6 +1,6 @@
 # Портфолио — Full-Stack / AI Engineer Александр Чеченев
 
-Статически экспортируемый двуязычный (RU/EN) сайт-резюме в editorial-кинетическом
+Статически экспортируемый двуязычный (RU/EN) сайт-портфолио в editorial-кинетическом
 стиле (тёплая бумага + кинетика, акцентные тёмные секции). Канонический адрес
 задаётся в `src/lib/config.ts` (см. ниже).
 
@@ -13,7 +13,7 @@
 | Фреймворк | Next.js 15 (App Router, SSG — страницы пререндерятся на сборке) |
 | Язык | TypeScript |
 | Стили | **SCSS Modules + БЭМ** (Tailwind v4 — только для тривиального, ≤3 утилиты) |
-| Анимации | Чистые CSS `@keyframes` + лёгкие хуки (`useReveal`, `useCountUp`, кастомный курсор, magnetic, parallax) |
+| Анимации | Чистые CSS `@keyframes` (бегущие строки, каретка, пульс) + лёгкие хуки (`useReveal`, `useTypewriter`, `useRagDemo`, кастомный курсор, magnetic) |
 | Шрифты | Manrope + JetBrains Mono (Google Fonts, `@import` в `globals.css`) |
 | Деплой | Vercel |
 
@@ -46,7 +46,7 @@ title: { ru: "Заголовок на русском", en: "English title" }
 Разделы в `site.ts`: `nav`, `hero`, `ragDemo`, `about`, `achievements`,
 `work`, `marquee`, `experience`, `skills`, `contact`, `footer`.
 
-**Опыт считается автоматически.** Число лет в Hero и «О себе» вычисляется из
+**Срок в продакшене считается автоматически.** Число лет в Hero и «Подходе» вычисляется из
 `TENURE_START` в `src/lib/tenure.ts` (с корректным склонением: `5 → «5 лет»`,
 `4.5 → «4,5 года»`). Год в футере берётся из `getCurrentYear()`
 (`src/lib/date.ts`). Хардкодить эти значения не нужно.
@@ -94,11 +94,10 @@ src/
   components/
     Portfolio/         — сборка страницы (+ useInteractions)
     Cursor/            — кастомный курсор (desktop)
-    primitives/        — T/LangProvider (i18n), Reveal, CountUp
-    sections/          — Nav, Hero, About, Achievements, Work, Marquee,
-                         Experience, Skills, Contact, Footer
+    primitives/        — T/LangProvider (i18n), Reveal, Marquee
+    sections/          — Nav, Hero, Intro, Band, Work, Services, Contact
                          (сложные секции дробятся в parts/)
-  hooks/               — поведение: useMediaQuery, useReveal, useCountUp,
+  hooks/               — поведение: useMediaQuery, useReveal, useTypewriter,
                          useMobileMenu, useRagDemo, useSyncLangUrl, interactions/*
   lib/                 — i18n, config (SITE_URL, links), tenure, date, cx
   content/site.ts      — весь двуязычный контент

@@ -1,6 +1,6 @@
 # CLAUDE.md — правила кодовой базы
 
-Сайт-резюме. Next.js 15 (App Router, `output: "export"` — статический SSG), React 19, TypeScript, Tailwind v4, Sass.
+Сайт-портфолио. Next.js 15 (App Router, `output: "export"` — статический SSG), React 19, TypeScript, Tailwind v4, Sass.
 
 ## Структура
 - Весь код — в `src/`. Алиас `@/*` → `src/*`.

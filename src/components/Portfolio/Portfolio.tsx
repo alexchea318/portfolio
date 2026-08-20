@@ -4,13 +4,13 @@ import type { Locale } from "@/lib/i18n";
 import { LangProvider } from "@/components/primitives/T";
 import { Cursor } from "@/components/Cursor";
 import { useInteractions } from "@/hooks/interactions";
+import { bands } from "@/content/site";
 import { Nav } from "@/components/sections/Nav";
 import { Hero } from "@/components/sections/Hero";
-import { About } from "@/components/sections/About";
-import { Achievements } from "@/components/sections/Achievements";
+import { Intro } from "@/components/sections/Intro";
+import { Band } from "@/components/sections/Band";
 import { Work } from "@/components/sections/Work";
-import { Experience } from "@/components/sections/Experience";
-import { Skills } from "@/components/sections/Skills";
+import { Services } from "@/components/sections/Services";
 import { Contact } from "@/components/sections/Contact";
 import styles from "./portfolio.module.scss";
 
@@ -22,11 +22,10 @@ function Shell() {
       <Nav />
       <main>
         <Hero />
-        <About />
-        <Achievements />
+        <Intro />
+        <Band text={bands.work} duration={62} />
         <Work />
-        <Experience />
-        <Skills />
+        <Services />
       </main>
       <Contact />
     </div>

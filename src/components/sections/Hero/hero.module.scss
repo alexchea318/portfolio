@@ -1,149 +1,120 @@
 @use 'mixins' as m;
 @use 'breakpoints' as bp;
 
-// Local copies of shared keyframes: CSS Modules scopes animation names, so the
-// keyframes must live in the same module file as the references to match.
-@keyframes axc-pan { 0% { background-position: 0% 50%; } 100% { background-position: 300% 50%; } }
-@keyframes axc-cue { 0% { transform: translateY(0); opacity: .9; } 60% { opacity: .15; } 100% { transform: translateY(16px); opacity: 0; } }
+@keyframes axc-caret { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
 
 .hero {
   position: relative;
-  z-index: 2;
   min-height: 100vh;
+  padding-top: var(--nav-h);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+
+  // Shadow that sinks the portrait into the page bottom. An overlay, not a
+  // mask on the image: the photo itself stays fully opaque, so nothing behind
+  // it can show through.
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 26vh;
+    background: linear-gradient(to top, var(--bg) 30%, transparent);
+    pointer-events: none;
+    z-index: 6;
+  }
+}
+
+// Four counter-scrolling headline rows fill everything above the fold.
+.hero__rows {
+  flex: 1;
+  min-height: 0;
+  padding-top: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 108px 6vw 48px;
-  @include bp.short { padding: 88px 6vw 28px; }
+  overflow: hidden;
+  position: relative;
+  z-index: 0;
+}
+
+.hero__line {
+  @include m.display;
+  font-size: clamp(34px, min(9.4vw, 11vh), 146px);
+  line-height: 1;
+  letter-spacing: -0.045em;
+  white-space: nowrap;
+}
+.hero__line--outline { @include m.display-outline; }
+
+.hero__photo {
+  position: absolute;
+  right: 3vw;
+  bottom: 0;
+  height: 78vh;
+  max-height: 820px;
+  width: auto;
+  object-fit: contain;
+  object-position: bottom;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.hero__foot {
+  position: relative;
+  z-index: 7;
+  display: flex;
+  align-items: baseline;
+  gap: 48px;
+  flex-wrap: wrap;
+  // Right pad keeps the copy clear of the portrait, which sits above it.
+  padding: 28px 44vw 34px var(--gutter);
 }
 
 .hero__eyebrow {
-  margin-bottom: 18px;
-  @include bp.short { margin-bottom: 12px; }
-}
-.hero__status {
-  @include m.mono;
-  font-size: 13px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(23, 21, 15, 0.6);
-  line-height: 1.7;
-}
-.hero__pulse {
-  display: inline-block;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: #30a46c;
-  margin-right: 11px;
-  vertical-align: middle;
-}
-.hero__status-text { vertical-align: middle; }
-
-.hero__title {
-  @include m.display;
+  @include m.mono(0.1em);
+  font-size: 12px;
+  text-transform: none;
+  color: var(--muted);
   margin: 0;
-  font-weight: 800;
-  line-height: 0.86;
-  letter-spacing: -0.045em;
-  // Cap by height too so the width-driven type shrinks on short laptop
-  // viewports instead of pushing content past 100vh. min() picks the smaller,
-  // so big screens (tall) and mobile (portrait) keep the width-driven size.
-  font-size: clamp(58px, min(15.5vw, 17vh), 250px);
+  line-height: 1.5;
+  // Fixed width so the status wraps to two lines and sits beside the tagline
+  // instead of pushing it onto its own row; min-height reserves both lines so
+  // the typewriter never reflows the row.
+  flex: 0 0 auto;
+  width: min(100%, 340px);
+  min-height: 3em;
 }
-.hero__line { display: block; overflow: hidden; }
-.hero__word { display: block; }
-.hero__word--grad {
-  @include m.grad-text;
-  display: block;
+.hero__caret {
+  color: var(--accent);
+  animation: axc-caret 1s step-end infinite;
 }
 
-.hero__role-row {
-  margin-top: 30px;
-  @include bp.short { margin-top: 18px; }
-}
-.hero__role-wrap {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 10px 18px;
-}
-.hero__role {
-  @include m.display;
-  font-weight: 700;
-  font-size: clamp(22px, 3vw, 42px);
-  letter-spacing: -0.025em;
-}
-.hero__spec {
-  @include m.mono;
-  font-size: clamp(12px, 1.1vw, 15px);
-  letter-spacing: 0.04em;
-  color: rgba(23, 21, 15, 0.5);
-  padding-bottom: 5px;
-}
-.hero__background {
-  @include m.mono;
-  margin-top: 15px;
-  @include bp.short { margin-top: 10px; }
-  font-size: 13px;
-  letter-spacing: 0.04em;
-  color: rgba(23, 21, 15, 0.55);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 9px;
-}
-.hero__bg-role { color: #8e4ec6; font-weight: 600; }
-.hero__bg-sep { opacity: 0.4; }
-
-.hero__bottom {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 40px 56px;
-  margin-top: 44px;
-  @include bp.short { gap: 24px 56px; margin-top: 24px; }
-}
-.hero__tagline-wrap { max-width: 500px; }
 .hero__tagline {
   margin: 0;
-  font-size: clamp(17px, 1.5vw, 21px);
-  line-height: 1.5;
-  color: rgba(23, 21, 15, 0.72);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--dim);
+  max-width: 42ch;
+  text-wrap: pretty;
 }
 
-.hero__scroll {
-  @include m.mono;
-  position: absolute;
-  bottom: 34px;
-  left: 6vw;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  color: rgba(23, 21, 15, 0.45);
-  @include bp.mobile { display: none; }
-  // Short laptops: the bottom row reaches down into this absolute cue, so drop
-  // it — the empty space it relies on only exists on tall desktop viewports.
-  @include bp.short { display: none; }
+@include bp.mobile {
+  .hero__photo {
+    right: -6vw;
+    height: 44vh;
+  }
+  .hero__foot {
+    padding: 24px var(--gutter) 40px;
+    gap: 20px;
+  }
+  // Taller shadow: on phones the copy sits right over the portrait's lower half.
+  .hero::after { height: 42vh; }
 }
-.hero__mouse {
-  position: relative;
-  display: inline-block;
-  width: 18px;
-  height: 26px;
-  border: 1px solid rgba(23, 21, 15, 0.35);
-  border-radius: 9px;
-}
-.hero__cue {
-  position: absolute;
-  top: 5px;
-  left: 50%;
-  width: 2px;
-  height: 6px;
-  background: rgba(23, 21, 15, 0.6);
-  transform: translateX(-50%);
-  animation: axc-cue 1.8s ease-in-out infinite;
+
+@include bp.reduced-motion {
+  .hero__caret { animation: none; }
 }

@@ -1,7 +1,10 @@
 "use client";
 import { useEffect } from "react";
 
-/** Custom cursor that sticks to and morphs around interactive elements.
+const SMALL = 24;
+const LARGE = 54;
+
+/** Trailing cursor ring that swells over links and buttons.
  *  Fine-pointer + non-reduced-motion only; cleans up on unmount. */
 export function useCursor() {
   useEffect(() => {
@@ -10,98 +13,44 @@ export function useCursor() {
     if (!fine || reduced) return;
 
     const ring = document.querySelector<HTMLElement>("[data-cursor-ring]");
-    const dot = document.querySelector<HTMLElement>("[data-cursor-dot]");
-    if (!ring || !dot) return;
+    if (!ring) return;
 
-    document.body.style.cursor = "none";
-    ring.style.display = "block";
-    dot.style.display = "block";
-    let mx = window.innerWidth / 2;
-    let my = window.innerHeight / 2;
-    let rx = mx;
-    let ry = my;
-    let shown = false;
-    let stuck: HTMLElement | null = null;
+    let x = window.innerWidth / 2;
+    let y = window.innerHeight / 2;
+    let cx = x;
+    let cy = y;
+    let big = false;
     let raf = 0;
 
+    // Delegated: catches links rendered after mount without re-binding.
     const onMove = (e: MouseEvent) => {
-      mx = e.clientX;
-      my = e.clientY;
-      dot.style.left = `${mx}px`;
-      dot.style.top = `${my}px`;
-      if (!shown) {
-        shown = true;
-        ring.style.opacity = "1";
-        dot.style.opacity = "1";
-      }
+      x = e.clientX;
+      y = e.clientY;
+      ring.style.opacity = "1";
+      const target = e.target instanceof Element ? e.target.closest("a[href], button") : null;
+      if (!!target === big) return;
+      big = !!target;
+      const size = big ? LARGE : SMALL;
+      ring.style.width = `${size}px`;
+      ring.style.height = `${size}px`;
+      ring.style.margin = `${-size / 2}px 0 0 ${-size / 2}px`;
+      ring.style.backgroundColor = big ? "var(--accent-soft)" : "transparent";
+      ring.style.borderColor = big ? "var(--accent)" : "var(--ink)";
     };
-    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mousemove", onMove, { passive: true });
 
     const loop = () => {
-      let tx = mx;
-      let ty = my;
-      if (stuck) {
-        const r = stuck.getBoundingClientRect();
-        tx = r.left + r.width / 2;
-        ty = r.top + r.height / 2;
-      }
-      const k = stuck ? 0.3 : 0.16;
-      rx += (tx - rx) * k;
-      ry += (ty - ry) * k;
-      ring.style.left = `${rx}px`;
-      ring.style.top = `${ry}px`;
+      cx += (x - cx) * 0.18;
+      cy += (y - cy) * 0.18;
+      ring.style.transform = `translate3d(${cx.toFixed(1)}px, ${cy.toFixed(1)}px, 0)`;
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
 
-    const enter = (el: HTMLElement) => {
-      const r = el.getBoundingClientRect();
-      // [data-cursor-wrap] opts a big element into the morph instead of the blob.
-      const wrap = el.hasAttribute("data-cursor-wrap");
-      if (!wrap && (r.width > 460 || r.height > 140)) {
-        ring.style.width = "58px";
-        ring.style.height = "58px";
-        ring.style.borderRadius = "50%";
-        dot.style.opacity = "0";
-        stuck = null;
-        return;
-      }
-      let br = getComputedStyle(el).borderRadius;
-      if (!br || br === "0px") br = "9px";
-      ring.style.width = `${r.width + 20}px`;
-      ring.style.height = `${r.height + 14}px`;
-      ring.style.borderRadius = br;
-      ring.style.borderWidth = "2px";
-      dot.style.opacity = "0";
-      stuck = el;
-    };
-    const leave = () => {
-      ring.style.width = "42px";
-      ring.style.height = "42px";
-      ring.style.borderRadius = "50%";
-      ring.style.borderWidth = "2px";
-      dot.style.opacity = "1";
-      stuck = null;
-    };
-
-    const targets = [...document.querySelectorAll<HTMLElement>("[data-cursor], a, button")];
-    const pairs = targets.map((el) => {
-      const onEnter = () => enter(el);
-      el.addEventListener("mouseenter", onEnter);
-      el.addEventListener("mouseleave", leave);
-      return { el, onEnter };
-    });
-
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("mousemove", onMove);
-      document.body.style.cursor = "";
-      ring.style.display = "none";
-      dot.style.display = "none";
-      pairs.forEach(({ el, onEnter }) => {
-        el.removeEventListener("mouseenter", onEnter);
-        el.removeEventListener("mouseleave", leave);
-      });
+      ring.style.opacity = "0";
     };
   }, []);
 }

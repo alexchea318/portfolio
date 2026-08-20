@@ -1,61 +1,48 @@
 "use client";
 
 import { useLang, useT } from "@/components/primitives/T";
+import { Marquee } from "@/components/primitives/Marquee";
+import { useTypewriter } from "@/hooks/useTypewriter";
+import { cx } from "@/lib/cx";
 import { hero } from "@/content/site";
 import { tenurePhrase } from "@/lib/tenure";
-import { RagDemo } from "./parts/RagDemo";
 import styles from "./hero.module.scss";
+
+const COPIES = [0, 1, 2, 3];
 
 export function Hero() {
   const { lang } = useLang();
   const t = useT();
 
-  const eyebrow = `${t(hero.openStatus)} — ${t(hero.location)} — ${tenurePhrase(lang)} ${t(hero.tenureSuffix)}`;
+  const eyebrow = `${t(hero.openStatus)} / ${t(hero.location)} / ${tenurePhrase(lang)} ${t(hero.tenureSuffix)}`;
+  const typed = useTypewriter(eyebrow);
 
   return (
-    <header id="top" className={styles.hero}>
-      <div className={styles.hero__eyebrow}>
-        <div className={styles.hero__status}>
-          <span className={styles.hero__pulse} />
-          <span className={styles["hero__status-text"]}>{eyebrow}</span>
-        </div>
+    <section id="top" className={styles.hero}>
+      <div className={styles.hero__rows}>
+        {hero.marquee.rows.map((row, i) => (
+          <Marquee
+            key={i}
+            dir={row.dir}
+            duration={row.duration}
+            className={cx(styles.hero__line, row.outline && styles["hero__line--outline"])}
+          >
+            {COPIES.map((n) => (
+              <span key={n}>{t(hero.marquee.lines[row.line])}</span>
+            ))}
+          </Marquee>
+        ))}
       </div>
 
-      <h1 className={styles.hero__title}>
-        <span className={styles.hero__line}>
-          <span className={styles.hero__word}>{t(hero.firstName)}</span>
-        </span>
-        <span className={styles.hero__line}>
-          <span className={styles["hero__word--grad"]}>{t(hero.lastName)}</span>
-        </span>
-      </h1>
+      <img src={hero.photo.image.src} alt={t(hero.photo.alt)} className={styles.hero__photo} />
 
-      <div className={styles["hero__role-row"]}>
-        <div className={styles["hero__role-wrap"]}>
-          <span className={styles.hero__role}>{t(hero.role)}</span>
-          <span className={styles.hero__spec}>{t(hero.spec)}</span>
-        </div>
-        <div className={styles.hero__background}>
-          <span>{t(hero.backgroundLabel)}</span>
-          <span className={styles["hero__bg-role"]}>{hero.backgroundRoles[0]}</span>
-          <span className={styles["hero__bg-sep"]}>·</span>
-          <span className={styles["hero__bg-role"]}>{hero.backgroundRoles[1]}</span>
-        </div>
+      <div className={styles.hero__foot}>
+        <p className={styles.hero__eyebrow}>
+          {typed}
+          <span className={styles.hero__caret} aria-hidden>_</span>
+        </p>
+        <p className={styles.hero__tagline}>{t(hero.tagline)}</p>
       </div>
-
-      <div className={styles.hero__bottom}>
-        <div className={styles["hero__tagline-wrap"]}>
-          <p className={styles.hero__tagline}>{t(hero.tagline)}</p>
-        </div>
-        <RagDemo />
-      </div>
-
-      <div className={styles.hero__scroll}>
-        <span className={styles.hero__mouse}>
-          <span data-cue className={styles.hero__cue} />
-        </span>
-        <span>{t(hero.scroll)}</span>
-      </div>
-    </header>
+    </section>
   );
 }

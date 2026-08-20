@@ -1,23 +1,24 @@
 import type { Metadata } from "next";
 import { Portfolio } from "@/components/Portfolio";
+import { meHero } from "@/content/site";
 
 const NAME = "Alexander Chechenev";
-const ROLE = "Full-Stack / AI Engineer (RAG)";
+const PITCH = "a site or service, built in a week";
 const DESC =
-  "I take RAG systems to production: backend, frontend, infrastructure and generation quality. Saint Petersburg, remote.";
+  "I build websites, online stores, client portals and chatbots. One person for the whole project: from idea to a working site in a week. Saint Petersburg, remote.";
 
 export const metadata: Metadata = {
-  title: `${NAME} — ${ROLE}`,
+  title: `${NAME} — ${PITCH}`,
   description: DESC,
   alternates: {
     canonical: "/en/",
     languages: { ru: "/", en: "/en/" },
   },
   openGraph: {
-    title: `${NAME} — ${ROLE}`,
+    title: `${NAME} — ${PITCH}`,
     description: DESC,
     type: "profile",
-    images: ["/img/me.jpg"],
+    images: [meHero.src],
   },
 };
 

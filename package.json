@@ -1,7 +1,7 @@
 {
-  "name": "cv",
+  "name": "portfolio",
   "version": "1.0.0",
-  "description": "Сайт-резюме — Александр Чеченев, Full-Stack / AI Engineer (RAG)",
+  "description": "Сайт-портфолио — Александр Чеченев, Full-Stack / AI Engineer: сервис любой сложности за неделю",
   "type": "module",
   "scripts": {
     "dev": "next dev",
