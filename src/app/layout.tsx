@@ -2,14 +2,14 @@ import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import "./globals.css";
 import { siteUrl, links } from "@/lib/config";
-import { meHero } from "@/content/site";
+import { ogRu } from "@/content/site";
 
 const NAME = "Александр Чеченев";
 // Pitch goes in the title; JOB_TITLE stays a real job title for JSON-LD.
-const PITCH = "сделаю сайт или сервис за неделю";
+const PITCH = "сайт за неделю, все работы под ключ";
 const JOB_TITLE = "Разработчик сайтов и сервисов";
 const DESC =
-  "Делаю сайты, интернет-магазины, личные кабинеты и чат-боты. Один человек на весь проект: от идеи до работающего сайта — за неделю. Санкт-Петербург, удалённо.";
+  "Сайты, магазины, личные кабинеты и чат-боты под ключ. Один человек на весь проект: от идеи до запуска — за неделю. Санкт-Петербург, удалённо.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl()),
@@ -23,9 +23,9 @@ export const metadata: Metadata = {
     title: `${NAME} — ${PITCH}`,
     description: DESC,
     type: "profile",
-    images: [meHero.src],
+    images: [{ url: ogRu.src, width: ogRu.width, height: ogRu.height, alt: `${NAME} — ${PITCH}` }],
   },
-  twitter: { card: "summary_large_image" },
+  twitter: { card: "summary_large_image", images: [ogRu.src] },
 };
 
 const jsonLd = {

@@ -12,8 +12,12 @@ import justAiVb from "@/assets/img/just-ai-vb.png";
 import elagin from "@/assets/img/elagin.png";
 import best from "@/assets/img/best.png";
 import lg from "@/assets/img/LG.jpg";
+// Карточки для соцсетей: тот же первый экран, 1200×630. Пересобирать при
+// смене строк героя — иначе картинка разойдётся с текстом на сайте.
+import ogRu from "@/assets/img/og-ru.jpg";
+import ogEn from "@/assets/img/og-en.jpg";
 
-export {meHero};
+export {ogRu, ogEn};
 
 /* ============================================================
    Язык сайта — как у заказчика, а не как в резюме: никаких RAG,
@@ -46,10 +50,15 @@ export const nav = {
    (число лет подставляется динамически — см. lib/tenure)
 ============================================================ */
 export const hero = {
-    // Typewriter eyebrow: openStatus / location / <tenure phrase> suffix
-    openStatus: {ru: "Беру заказы", en: "Available for work"},
-    location: {ru: "Санкт-Петербург / Удалённо", en: "St. Petersburg / Remote"},
-    tenureSuffix: {ru: "в разработке", en: "of building things"},
+    // Чипы в подвале первого экрана. Раньше это была одна строка через слэши;
+    // теперь каждый факт — отдельная плашка, к последней слева подставляется
+    // число лет из lib/tenure.
+    chips: {
+        status: {ru: "Беру заказы", en: "Available for work"},
+        city: {ru: "Санкт-Петербург", en: "St. Petersburg"},
+        mode: {ru: "Удалённо", en: "Remote"},
+        tenureSuffix: {ru: "в разработке", en: "of building things"},
+    } satisfies Record<"status" | "city" | "mode" | "tenureSuffix", I18n>,
 
     // Строки чередуются: чётные — залитые, нечётные — контурные.
     marquee: {
@@ -290,11 +299,13 @@ export const contact = {
     headline: {ru: "Написать мне ↗\uFE0E", en: "Get in touch ↗\uFE0E"},
     headlineHref: links.telegram,
     toTop: {ru: "Наверх ↑", en: "Back to top ↑"},
+    // Подпись плитки — площадка, значение — ник: дублировать название площадки
+    // в обоих полях нечего. Ники берём из самих ссылок, чтобы не расходились.
     links: [
-        {kind: "email", value: links.email, href: `mailto:${links.email}`},
-        {kind: "Telegram", value: "Telegram", href: links.telegram},
-        {kind: "LinkedIn", value: "LinkedIn", href: links.linkedin},
-        {kind: "VK", value: "VK", href: links.vk},
+        {kind: "Email", value: links.email, href: `mailto:${links.email}`},
+        {kind: "Telegram", value: links.telegram.replace("https://t.me/", "@"), href: links.telegram},
+        {kind: "LinkedIn", value: links.linkedin.replace("https://www.linkedin.com/in/", ""), href: links.linkedin},
+        {kind: "VK", value: links.vk.replace("https://vk.me/", "@"), href: links.vk},
     ],
 };
 

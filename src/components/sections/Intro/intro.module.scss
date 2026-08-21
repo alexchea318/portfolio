@@ -108,8 +108,10 @@
   align-self: flex-end;
   max-width: 88%;
   margin: 0;
-  background: var(--ink);
-  color: var(--bg);
+  // Quiet lift off the panel, not an inverted block: at full --ink the bubble
+  // read as a solid button rather than a message.
+  background: color-mix(in oklab, var(--ink) 14%, var(--panel));
+  color: var(--ink);
   padding: 12px 15px;
   border-radius: 12px 12px 2px 12px;
   font-size: 14px;

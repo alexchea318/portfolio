@@ -32,6 +32,8 @@
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --gutter: 24px;
   --nav-h: 76px;
+  /* Высота управляющих элементов шапки: кнопка, переключатель языка, бургер. */
+  --ctl-h: 34px;
   /* Fold height. useViewportLock overwrites this with a frozen px value on
      touch devices, where the browser chrome collapses mid-scroll. */
   --app-h: 100svh;

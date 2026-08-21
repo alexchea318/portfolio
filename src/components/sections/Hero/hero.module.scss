@@ -1,7 +1,7 @@
 @use 'mixins' as m;
 @use 'breakpoints' as bp;
 
-@keyframes axc-caret { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+@keyframes axc-chip-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
 .hero {
   position: relative;
@@ -76,23 +76,25 @@
   padding: 28px 44vw 34px var(--gutter);
 }
 
-.hero__eyebrow {
-  @include m.mono(0.1em);
-  font-size: 12px;
-  text-transform: none;
-  color: var(--muted);
-  margin: 0;
-  line-height: 1.5;
-  // Fixed width so the status wraps to two lines and sits beside the tagline
-  // instead of pushing it onto its own row; min-height reserves both lines so
-  // the typewriter never reflows the row.
+.hero__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  // Fixed width so the chips wrap into their own column and sit beside the
+  // tagline instead of pushing it onto its own row.
   flex: 0 0 auto;
   width: min(100%, 340px);
-  min-height: 3em;
 }
-.hero__caret {
-  color: var(--accent);
-  animation: axc-caret 1s step-end infinite;
+.hero__chip {
+  @include m.chip;
+  // On phones the row lands on the portrait's chest: without a fill the border
+  // boxes read as noise over the photo. Translucent, so it still sinks into the
+  // page on desktop, where the same colour sits behind them.
+  background: color-mix(in oklab, var(--bg) 78%, transparent);
+  // Chips arrive one after another: the row is the first thing under the fold's
+  // headline, and a plain static block reads as unfinished next to the marquees.
+  animation: axc-chip-in 0.5s var(--ease) both;
+  animation-delay: calc(var(--i) * 90ms);
 }
 
 .hero__tagline {
@@ -123,5 +125,5 @@
 }
 
 @include bp.reduced-motion {
-  .hero__caret { animation: none; }
+  .hero__chip { animation: none; }
 }

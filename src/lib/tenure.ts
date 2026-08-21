@@ -1,8 +1,9 @@
 import type { Locale } from "@/lib/i18n";
 
-/** Production career started in February 2022. The "4.5 years" figure is
- *  derived from this date so it stays current on every render/build. */
-export const TENURE_START = new Date(2022, 1, 1); // month is 0-indexed → February
+/** Стаж считается с января 2018-го — с фриланса, а не с найма: заказы на сайты
+ *  начались тогда. Число лет выводится из этой даты, поэтому не устаревает —
+ *  оно пересчитывается на каждом рендере и на каждой сборке. */
+export const TENURE_START = new Date(2018, 0, 1); // месяц с нуля → январь
 
 const MS_PER_YEAR = 365.25 * 24 * 60 * 60 * 1000;
 
@@ -15,9 +16,16 @@ export function tenureYears(now: Date = new Date()): number {
 /** Evaluated at module load: build time on the server, runtime in the browser. */
 export const TENURE = tenureYears();
 
-/** Russian plural of "год" for the given count. */
+/** Склонение «год» под число.
+ *
+ *  Дробное число склоняется по целой части — так это и звучит в речи:
+ *  «8,5 лет», «4,5 года». Единственная поправка — единица: «1,5 год» не говорят,
+ *  там «года». */
 function ruYearWord(n: number): string {
-  if (!Number.isInteger(n)) return "года"; // decimals take genitive singular
+  if (!Number.isInteger(n)) {
+    const word = ruYearWord(Math.trunc(n));
+    return word === "год" ? "года" : word;
+  }
   const d10 = n % 10;
   const d100 = n % 100;
   if (d10 === 1 && d100 !== 11) return "год";
@@ -31,13 +39,13 @@ export function formatTenureNumber(n: number, lang: Locale): string {
   return lang === "ru" ? s.replace(".", ",") : s;
 }
 
-/** Number + unit, e.g. "4,5 года" / "4.5 years". */
+/** Number + unit, e.g. "8,5 лет" / "8.5 years". */
 export function tenurePhrase(lang: Locale, n: number = TENURE): string {
   const num = formatTenureNumber(n, lang);
-  return lang === "ru" ? `${num} ${ruYearWord(n)}` : `${num} years`;
+  return lang === "ru" ? `${num} ${ruYearWord(n)}` : `${num} ${n === 1 ? "year" : "years"}`;
 }
 
 /** Just the unit word, e.g. "года" / "years". */
 export function tenureUnit(lang: Locale, n: number = TENURE): string {
-  return lang === "ru" ? ruYearWord(n) : "years";
+  return lang === "ru" ? ruYearWord(n) : n === 1 ? "year" : "years";
 }

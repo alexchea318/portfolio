@@ -1,8 +1,8 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { useLang, useT } from "@/components/primitives/T";
 import { Marquee } from "@/components/primitives/Marquee";
-import { useTypewriter } from "@/hooks/useTypewriter";
 import { cx } from "@/lib/cx";
 import { hero } from "@/content/site";
 import { tenurePhrase } from "@/lib/tenure";
@@ -14,8 +14,8 @@ export function Hero() {
   const { lang } = useLang();
   const t = useT();
 
-  const eyebrow = `${t(hero.openStatus)} / ${t(hero.location)} / ${tenurePhrase(lang)} ${t(hero.tenureSuffix)}`;
-  const typed = useTypewriter(eyebrow);
+  const c = hero.chips;
+  const chips = [t(c.status), t(c.city), t(c.mode), `${tenurePhrase(lang)} ${t(c.tenureSuffix)}`];
 
   return (
     <section id="top" className={styles.hero}>
@@ -37,10 +37,13 @@ export function Hero() {
       <img src={hero.photo.image.src} alt={t(hero.photo.alt)} className={styles.hero__photo} />
 
       <div className={styles.hero__foot}>
-        <p className={styles.hero__eyebrow}>
-          {typed}
-          <span className={styles.hero__caret} aria-hidden>_</span>
-        </p>
+        <div className={styles.hero__chips}>
+          {chips.map((chip, i) => (
+            <span key={chip} className={styles.hero__chip} style={{ "--i": i } as CSSProperties}>
+              {chip}
+            </span>
+          ))}
+        </div>
         <p className={styles.hero__tagline}>{t(hero.tagline)}</p>
       </div>
     </section>
