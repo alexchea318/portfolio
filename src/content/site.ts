@@ -21,6 +21,10 @@ export {meHero};
    человек получает на руки, и сроки.
 ============================================================ */
 
+// Каждая стрелка ↗ идёт со \uFE0E (variation selector-15). Ни в Manrope, ни в
+// IBM Plex Mono нет U+2197, и iOS подставляет цветной эмодзи-шрифт — селектор
+// требует именно текстовый глиф.
+
 export type MarqueeDir = "left" | "right";
 
 /* ============================================================
@@ -34,7 +38,7 @@ export const nav = {
         {href: "#services", label: {ru: "Услуги", en: "Services"}},
         {href: "#contact", label: {ru: "Контакты", en: "Contacts"}},
     ] satisfies { href: string; label: I18n }[],
-    cta: {label: {ru: "Написать ↗", en: "Get in touch ↗"}, href: links.telegram},
+    cta: {label: {ru: "Написать ↗\uFE0E", en: "Get in touch ↗\uFE0E"}, href: links.telegram},
 };
 
 /* ============================================================
@@ -106,8 +110,8 @@ export const intro = {
     ] satisfies { value?: I18n; label: I18n }[],
 
     ctas: [
-        {label: {ru: "Обсудить задачу ↗", en: "Discuss your project ↗"}, href: links.telegram, solid: true},
-        {label: {ru: "Смотреть проекты ↗", en: "See the projects ↗"}, href: "#work", solid: false},
+        {label: {ru: "Обсудить задачу ↗\uFE0E", en: "Discuss your project ↗\uFE0E"}, href: links.telegram, solid: true},
+        {label: {ru: "Смотреть проекты ↗\uFE0E", en: "See the projects ↗\uFE0E"}, href: "#work", solid: false},
     ] satisfies { label: I18n; href: string; solid: boolean }[],
 
     // Не список обязанностей — три причины, почему неделя это реально.
@@ -184,18 +188,14 @@ export const bands = {
    WORK — три проекта и лента кадров
 ============================================================ */
 export const work = {
-    cta: {ru: "Перейти к проекту ↗", en: "View project ↗"},
-    // Что это за продукт и что там делал я — обычными словами. Теги — короткие
+    cta: {ru: "Перейти к проекту ↗\uFE0E", en: "View project ↗\uFE0E"},
+    // Один абзац на проект — что там делал я, обычными словами. Теги — короткие
     // подписи под проектом, а не список технологий.
     cases: [
         {
             company: "Just AI",
             period: {ru: "с 2024", en: "since 2024"},
             title: {ru: "Поиск по документам компании", en: "Search across company documents"},
-            what: {
-                ru: "Вместо папок с файлами чат: сотрудники спрашивают обычными словами, а система сама находит ответ в тысячах внутренних документов.",
-                en: "A chat instead of folders full of files: employees ask in plain words and the system finds the answer among thousands of internal documents.",
-            },
             text: {
                 ru: "Начинал с того, что человек видит на экране: как продукт выглядит и как им пользоваться, помогал делать так же командам других продуктов. Сейчас один из главных инженеров: отвечаю за то, чтобы система понимала вопрос и давала точный ответ.",
                 en: "I started with everything a person sees on screen: how the product looks and how it is used, and helped other product teams do the same. Today I am one of the lead engineers: I make sure the system understands the question and answers it accurately.",
@@ -211,10 +211,6 @@ export const work = {
         {
             company: "Заправыч",
             title: {ru: "Крупный сервис по топливу на заправках", en: "A large fuel service for petrol stations"},
-            what: {
-                ru: "Карта заправок с ценами на каждый вид топлива, фильтрами и чатом водителей: видно, где заправиться дешевле прямо сейчас.",
-                en: "A map of petrol stations with prices per fuel type, filters and a drivers' chat: you can see where to fill up cheaper right now.",
-            },
             text: {
                 ru: "Сделал сервис целиком: карта, цены, фильтры и общение водителей в одном месте.",
                 en: "I built the service end to end: the map, the prices, the filters and the drivers' chat in one place.",
@@ -224,15 +220,12 @@ export const work = {
                 {ru: "Много пользователей", en: "Many users"},
                 {ru: "Сделал целиком", en: "Built end to end"},
             ],
+            href: "https://zapravy4.com/",
         },
         {
             company: "НеоБИТ",
             period: {ru: "2023–2024", en: "2023–2024"},
             title: {ru: "Сервис для работы с публикациями в соцсетях", en: "A service for working with social media posts"},
-            what: {
-                ru: "Тексты и картинки для постов, разбор подписчиков и помощники, которые отвечают в переписке, всё в одном сервисе.",
-                en: "Texts and images for posts, audience insights and assistants that reply in chats, all in one service.",
-            },
             text: {
                 ru: "Руководил запуском сервиса целиком: команда из пяти человек, архитектура, сроки и вывод в боевую эксплуатацию под реальной нагрузкой.",
                 en: "I led the whole launch: a team of five, the architecture, the deadlines and going live under real traffic.",
@@ -244,7 +237,7 @@ export const work = {
             ],
             href: "https://neobit.ru/",
         },
-    ] satisfies { company: string; period?: I18n; title: I18n; what: I18n; text: I18n; tags: I18n[]; href?: string }[],
+    ] satisfies { company: string; period?: I18n; title: I18n; text: I18n; tags: I18n[]; href?: string }[],
 
     // Две встречные ленты кадров под проектами.
     tiles: [
@@ -294,7 +287,7 @@ export const contact = {
         ru: "Стандартных задач у меня почти не бывает, и это нормально. Просто опишите обычными словами, что хотите получить на выходе, а как это устроить внутри, придумаю я.",
         en: "I almost never get a standard brief, and that is fine. Just describe in plain words what you want to end up with; how it works inside is mine to figure out.",
     } satisfies I18n,
-    headline: {ru: "Написать мне ↗", en: "Get in touch ↗"},
+    headline: {ru: "Написать мне ↗\uFE0E", en: "Get in touch ↗\uFE0E"},
     headlineHref: links.telegram,
     toTop: {ru: "Наверх ↑", en: "Back to top ↑"},
     links: [

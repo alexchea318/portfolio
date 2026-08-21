@@ -4,6 +4,7 @@ import type { Locale } from "@/lib/i18n";
 import { LangProvider } from "@/components/primitives/T";
 import { Cursor } from "@/components/Cursor";
 import { useInteractions } from "@/hooks/interactions";
+import { useViewportLock } from "@/hooks/useViewportLock";
 import { bands } from "@/content/site";
 import { Nav } from "@/components/sections/Nav";
 import { Hero } from "@/components/sections/Hero";
@@ -16,6 +17,7 @@ import styles from "./portfolio.module.scss";
 
 function Shell() {
   useInteractions();
+  useViewportLock();
   return (
     <div className={styles.portfolio}>
       <Cursor />

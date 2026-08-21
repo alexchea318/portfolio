@@ -30,7 +30,6 @@ export function WorkCase({ c, index }: { c: Case; index: number }) {
       </div>
 
       <div className={styles.case__body}>
-        <p className={styles.case__what}>{t(c.what)}</p>
         <p className={styles.case__text}>{t(c.text)}</p>
         {c.href && <span className={styles.case__cta}>{t(work.cta)}</span>}
       </div>
