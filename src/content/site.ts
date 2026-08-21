@@ -55,7 +55,7 @@ export const hero = {
     marquee: {
         lines: [
             {ru: "Сайт за неделю", en: "A site in a week"},
-            {ru: "Под ключ, один", en: "Turnkey, one person"},
+            {ru: "Все работы под ключ", en: "Turnkey, start to finish"},
         ] satisfies I18n[],
         rows: [
             {line: 0, dir: "left", duration: 68, outline: false},
