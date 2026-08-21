@@ -19,6 +19,16 @@
   background: oklch(0.19 0.004 260 / 0.86);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+
+  // On phones the bar scrolls away with the page. A fixed, blurred bar has to
+  // repaint full-width on every frame of the browser chrome hiding or showing,
+  // which reads as the whole page shuddering.
+  @include bp.mobile {
+    position: relative;
+    background: var(--bg);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
 }
 
 .nav__brand {

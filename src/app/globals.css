@@ -34,6 +34,12 @@
   --nav-h: 76px;
 }
 
+/* On phones the burger sets the bar's height, and the bar sits in the flow —
+   the hero subtracts this instead of padding it. */
+@media (max-width: 820px) {
+  :root { --nav-h: 66px; }
+}
+
 * { box-sizing: border-box; }
 
 html { scroll-behavior: smooth; }

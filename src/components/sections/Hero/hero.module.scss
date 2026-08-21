@@ -5,7 +5,9 @@
 
 .hero {
   position: relative;
-  min-height: 100vh;
+  // svh, not vh/dvh: the small-viewport unit is resolved once and never
+  // recomputed, so hiding the browser chrome cannot reflow the fold.
+  min-height: 100svh;
   padding-top: var(--nav-h);
   display: flex;
   flex-direction: column;
@@ -21,7 +23,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    height: 26vh;
+    height: 26svh;
     background: linear-gradient(to top, var(--bg) 30%, transparent);
     pointer-events: none;
     z-index: 6;
@@ -43,7 +45,7 @@
 
 .hero__line {
   @include m.display;
-  font-size: clamp(34px, min(9.4vw, 11vh), 146px);
+  font-size: clamp(34px, min(9.4vw, 11svh), 146px);
   line-height: 1;
   letter-spacing: -0.045em;
   white-space: nowrap;
@@ -54,7 +56,7 @@
   position: absolute;
   right: 3vw;
   bottom: 0;
-  height: 78vh;
+  height: 78svh;
   max-height: 820px;
   width: auto;
   object-fit: contain;
@@ -103,16 +105,21 @@
 }
 
 @include bp.mobile {
+  // The bar is in the flow here, so the fold is the viewport minus its height.
+  .hero {
+    min-height: calc(100svh - var(--nav-h));
+    padding-top: 0;
+  }
   .hero__photo {
     right: -6vw;
-    height: 44vh;
+    height: 44svh;
   }
   .hero__foot {
     padding: 24px var(--gutter) 40px;
     gap: 20px;
   }
   // Taller shadow: on phones the copy sits right over the portrait's lower half.
-  .hero::after { height: 42vh; }
+  .hero::after { height: 42svh; }
 }
 
 @include bp.reduced-motion {
