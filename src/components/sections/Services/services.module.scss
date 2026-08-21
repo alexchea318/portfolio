@@ -50,7 +50,7 @@ $chip-w: 260px;
   }
 }
 
-// One chip at a time inverts; the highlight walks the list on a timer.
+// One chip at a time lights up; the highlight walks the list on a timer.
 .chip {
   @include m.mono(0.14em);
   height: $chip-h;
@@ -66,8 +66,10 @@ $chip-w: 260px;
 
   @include bp.mobile { min-width: $chip-w; }
 }
+// Accent wash, not an ink fill: a solid white chip read as a pressed button
+// and pulled more attention than a passing highlight should.
 .chip--active {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--bg);
+  background: var(--accent-soft);
+  border-color: color-mix(in oklab, var(--accent) 45%, transparent);
+  color: var(--accent);
 }

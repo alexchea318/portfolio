@@ -77,6 +77,8 @@
 }
 
 .hero__chips {
+  position: relative;
+  z-index: 7;
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -87,10 +89,6 @@
 }
 .hero__chip {
   @include m.chip;
-  // On phones the row lands on the portrait's chest: without a fill the border
-  // boxes read as noise over the photo. Translucent, so it still sinks into the
-  // page on desktop, where the same colour sits behind them.
-  background: color-mix(in oklab, var(--bg) 78%, transparent);
   // Chips arrive one after another: the row is the first thing under the fold's
   // headline, and a plain static block reads as unfinished next to the marquees.
   animation: axc-chip-in 0.5s var(--ease) both;
@@ -116,9 +114,20 @@
     right: -6vw;
     height: calc(var(--app-h) * 0.44);
   }
-  .hero__foot {
-    padding: 24px var(--gutter) 40px;
-    gap: 20px;
+  // The chips move out of the foot to the top of the fold: down there they
+  // landed on the portrait's chest. `display: contents` dissolves the foot so
+  // both halves become children of the hero column and `order` can split them.
+  .hero__foot { display: contents; }
+  .hero__chips {
+    order: -1;
+    width: 100%;
+    padding: 14px var(--gutter) 0;
+  }
+  .hero__tagline {
+    position: relative;
+    z-index: 7;
+    max-width: none;
+    padding: 0 var(--gutter) 40px;
   }
   // Taller shadow: on phones the copy sits right over the portrait's lower half.
   .hero::after { height: calc(var(--app-h) * 0.42); }
